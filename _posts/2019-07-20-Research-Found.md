@@ -1,12 +1,9 @@
 ---
-title: "Pagination works"
+title: "Research Found 2019-7"
 comments : true
 layout: post
 published: true
 ---
-
-## Research Found 2019-7
-
 
 ### [Predict then Propagate:](https://github.com/benedekrozemberczki/APPNP)
 
