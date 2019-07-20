@@ -1,3 +1,8 @@
+---
+title: "Test Blog Post"
+mathjax: true
+published: false
+---
 
 # Machine Learning Exercise 1 - Linear Regression
 

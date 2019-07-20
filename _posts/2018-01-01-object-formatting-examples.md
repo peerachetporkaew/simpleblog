@@ -2,6 +2,7 @@
 title:  "Object formatting examples"
 categories: example
 mathjax: true
+published: false
 ---
 
 Embed code by putting `{{ "{% highlight language " }}%}` `{{ "{% endhighlight " }}%}` blocks around it.

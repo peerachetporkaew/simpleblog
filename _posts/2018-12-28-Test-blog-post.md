@@ -1,6 +1,7 @@
 ---
 title: "Test Blog Post"
 mathjax: true
+published: false
 ---
 
 # This is a test blog
