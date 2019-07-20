@@ -22,7 +22,7 @@ Great !
 https://medium.com/huggingface/training-larger-batches-practical-tips-on-1-gpu-multi-gpu-distributed-setups-ec88c3e51255
 
 
-### Span-Based Constituency Parsing with a Structure-Label System and Provably Optimal Dynamic Oracles
+### [Span-Based Constituency Parsing with a Structure-Label System and Provably Optimal Dynamic Oracles](http://web.engr.oregonstate.edu/~huanlian/papers/span.pdf)
 
 http://web.engr.oregonstate.edu/~huanlian/papers/span.pdf
 http://web.engr.oregonstate.edu/~huanlian/
