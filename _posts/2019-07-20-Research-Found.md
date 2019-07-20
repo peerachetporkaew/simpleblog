@@ -5,10 +5,10 @@ layout: post
 published: true
 ---
 
-## Research Found
+## Research Found 2019-7
 
 
-## Predict then Propagate:
+### [Predict then Propagate:](https://github.com/benedekrozemberczki/APPNP)
 
 A PyTorch implementation of "Predict then Propagate: Graph Neural Networks meet Personalized PageRank" (ICLR 2019). APPNP is a node-level semi-supervised learning algorithm which has near state-of-the-art performance on most standard node classification datasets. It can be used for tasks such as document labelling, malware detection, churn prediction and so on.
 https://github.com/benedekrozemberczki/APPNP
@@ -20,35 +20,36 @@ Can this implement in Machine Translation (Ontology + NMT)
 
 Great !
 
-## Training Neural Nets on Larger Batches: Practical Tips for 1-GPU, Multi-GPU & Distributed setups
+### [Training Neural Nets on Larger Batches: Practical Tips for 1-GPU, Multi-GPU & Distributed setups](https://medium.com/huggingface/training-larger-batches-practical-tips-on-1-gpu-multi-gpu-distributed-setups-ec88c3e51255)
 
 https://medium.com/huggingface/training-larger-batches-practical-tips-on-1-gpu-multi-gpu-distributed-setups-ec88c3e51255
 
 
-## Span-Based Constituency Parsing with a Structure-Label System and Provably Optimal Dynamic Oracles
+### Span-Based Constituency Parsing with a Structure-Label System and Provably Optimal Dynamic Oracles
 
 http://web.engr.oregonstate.edu/~huanlian/papers/span.pdf
 http://web.engr.oregonstate.edu/~huanlian/
 
 
 
-## Self-Attention with Relative Position Representations
+### [Self-Attention with Relative Position Representations](https://arxiv.org/pdf/1803.02155.pdf)
 
 https://arxiv.org/pdf/1803.02155.pdf
 
 https://medium.com/@_init_how-self-attention-with-relative-position-representations-works-28173b8c245a
 
-## (Hardcore) Weight Agnostic Neural Networks
+### [(Hardcore) Weight Agnostic Neural Networks](https://arxiv.org/pdf/1906.04358.pdf)
 
 https://weightagnostic.github.io
+
 https://arxiv.org/pdf/1906.04358.pdf
 
-## Paper with CODE !!
+### [Paper with CODE !!](https://paperswithcode.com/sota)
 
 https://paperswithcode.com/sota
 
 
-## Input Switched Affine Networks: An RNN Architecture Designed for Interpretability (ICML 2017)
+### [Input Switched Affine Networks: An RNN Architecture Designed for Interpretability (ICML 2017)](https://github.com/philipperemy/tensorflow-isan-rnn)
 
 https://github.com/philipperemy/tensorflow-isan-rnn
 
