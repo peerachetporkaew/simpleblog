@@ -8,7 +8,7 @@ categories: Paper
 
 ### Ordered Neurons : Code Hacking
 
-![torch.cumsum](../assets/torch.cumsum.PNG)
+![torch.cumsum](./assets/torch.cumsum.PNG)
 
 
 ### English
