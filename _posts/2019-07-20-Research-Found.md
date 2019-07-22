@@ -128,6 +128,9 @@ Transformers have a potential of learning longer-term dependency, but are limite
 
 [CODE](https://github.com/kimiyoung/transformer-xl)
 
+[CODE](https://github.com/huggingface/pytorch-transformers)
+
+
 
 ### [Hierarchical Multiscale Recurrent Neural Networks](https://www.semanticscholar.org/paper/Hierarchical-Multiscale-Recurrent-Neural-Networks-Chung-Ahn/0ca2bd0e40a8f0a57665535ae1c31561370ad183)
 
