@@ -6,6 +6,10 @@ published: true
 categories: Research
 ---
 
+### [Modeling Localness for Self-Attention Networks](https://arxiv.org/pdf/1810.10182.pdf)
+
+Self-attention networks have proven to be of profound value for its strength of capturing global dependencies. In this work, we propose to model localness for self-attention networks, which enhances the ability of capturing useful local context. We cast localness modeling as a learnable Gaussian bias, which indicates the central and scope of the local region to be paid more attention. The bias is then incorporated into the original attention distribution to form a revised distribution. To maintain the strength of capturing long distance dependencies and enhance the ability of capturing short-range dependencies, we only apply localness modeling to lower layers of self-attention networks. Quantitative and qualitative analyses on Chinese-English and English-German translation tasks demonstrate the effectiveness and universality of the proposed approach.
+
 ### [Modeling Recurrence for Transformer](https://arxiv.org/pdf/1904.03092.pdf)
 
 Recently, the Transformer model that is based solely on attention mechanisms, has advanced the state-of-the-art on various machine translation tasks. However, recent studies reveal that the lack of recurrence hinders its further improvement of translation capacity. In response to this problem, we propose to directly model recurrence for Transformer with an additional recurrence encoder. In addition to the standard recurrent neural network, we introduce a novel attentive recurrent network to leverage the strengths of both attention and recurrent networks. Experimental results on the widely-used WMT14 English-German and WMT17 Chinese-English translation tasks demonstrate the effectiveness of the proposed approach. Our studies also reveal that the proposed model benefits from a short-cut that bridges the source and target sequences with a single recurrent layer, which outperforms its deep counterpart.
