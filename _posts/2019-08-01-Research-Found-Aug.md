@@ -59,6 +59,60 @@ Categorical Reparameterization with Gumbel-Softmax (2016)
 
 ในมุมนี้ก็จะเห็นว่าจริง ๆ แล้วไม่ว่า categorical distribution ของเราจะมีหน้าตาอย่างไรก็ตาม สิ่งที่เราต้องทำคือการสุ่มจาก Gumbel(0,1) เสมอ ซึ่งทำให้เทคนิค Gumbel-Softmax นั้นเหมือนการใช้ Reparameterization trick ที่นำเสนอในการใช้เทรน variational auto encoder อย่างมาก แต่ว่า Gumbel-Softmax นั้นใช้สำหรับ categorical distribution ในขณะที่ Rep. trick ใช้กับ continuous distribution ที่มีหน้าตาคล้าย Gaussian
 
+```python
+#from https://github.com/vlievin/pytorch/blob/a29ba4cb3d882eab52f1755b6c0ced6008d27ceb/torch/nn/functional.py
+
+@weak_script
+def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
+    # type: (Tensor, float, bool, float, int) -> Tensor
+    r"""
+    Samples from the Gumbel-Softmax distribution (`Link 1`_  `Link 2`_) and optionally discretizes.
+    Args:
+      logits: `[..., num_features]` unnormalized log probabilities
+      tau: non-negative scalar temperature
+      hard: if ``True``, the returned samples will be discretized as one-hot vectors,
+            but will be differentiated as if it is the soft sample in autograd
+      dim (int): A dimension along which softmax will be computed. Default: -1.
+    Returns:
+      Sampled tensor of same shape as `logits` from the Gumbel-Softmax distribution.
+      If ``hard=True``, the returned samples will be one-hot, otherwise they will
+      be probability distributions that sum to 1 across `dim`.
+    .. note::
+      This function is here for legacy reasons, may be removed from nn.Functional in the future.
+    .. note::
+      The main trick for `hard` is to do  `y_hard - y_soft.detach() + y_soft`
+      It achieves two things:
+      - makes the output value exactly one-hot
+      (since we add then subtract y_soft value)
+      - makes the gradient equal to y_soft gradient
+      (since we strip all other gradients)
+    Examples::
+        >>> logits = torch.randn(20, 32)
+        >>> # Sample soft categorical using reparametrization trick:
+        >>> F.gumbel_softmax(logits, tau=1, hard=False)
+        >>> # Sample hard categorical using "Straight-through" trick:
+        >>> F.gumbel_softmax(logits, tau=1, hard=True)
+    .. _Link 1:
+        https://arxiv.org/abs/1611.00712
+    .. _Link 2:
+        https://arxiv.org/abs/1611.01144
+    """
+
+    gumbels = - (torch.empty_like(logits).exponential_() + eps).log()  # ~Gumbel(0,1)
+    gumbels = (logits + gumbels) / tau  # ~Gumbel(logits,tau)
+    y_soft = gumbels.softmax(dim)
+
+    if hard:
+        # Straight through.
+        index = y_soft.max(dim, keepdim=True)[1]
+        y_hard = torch.zeros_like(logits).scatter_(dim, index, 1.0)
+        ret = y_hard - y_soft.detach() + y_soft
+    else:
+        # Reparametrization trick.
+        ret = y_soft
+    return ret
+```
+
 ### [Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks (ICML2017)](https://arxiv.org/abs/1703.03400)
 
 We propose an algorithm for meta-learning that is model-agnostic, in the sense that it is compatible with any model trained with gradient descent and applicable to a variety of different learning problems, including classification, regression, and reinforcement learning. The goal of meta-learning is to train a model on a variety of learning tasks, such that it can solve new learning tasks using only a small number of training samples. In our approach, the parameters of the model are explicitly trained such that a small number of gradient steps with a small amount of training data from a new task will produce good generalization performance on that task. In effect, our method trains the model to be easy to fine-tune. We demonstrate that this approach leads to state-of-the-art performance on two few-shot image classification benchmarks, produces good results on few-shot regression, and accelerates fine-tuning for policy gradient reinforcement learning with neural network policies.
