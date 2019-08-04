@@ -131,3 +131,12 @@ Good Ebook
 
 
 ### [ML Slides](https://m2dsupsdlclass.github.io/lectures-labs/?fbclid=IwAR0H-N2iOjeAAYjf0p11xVdkpeEF6_tQJN1DmX2sQE1GuvfzBP5P0r2fD20)
+
+
+### MinimumRiskTraining for NMT
+
+https://github.com/neubig/nmt-tips
+
+http://www.phontron.com/paper/neubig16wat.pdf
+
+https://www.groundai.com/project/on-the-weaknesses-of-reinforcement-learning-for-neural-machine-translation/1
