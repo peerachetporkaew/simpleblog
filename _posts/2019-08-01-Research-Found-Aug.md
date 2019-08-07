@@ -140,3 +140,20 @@ https://github.com/neubig/nmt-tips
 http://www.phontron.com/paper/neubig16wat.pdf
 
 https://www.groundai.com/project/on-the-weaknesses-of-reinforcement-learning-for-neural-machine-translation/1
+
+### [Differentiable Dynamic Programming for Structured Prediction and Attention](http://proceedings.mlr.press/v80/mensch18a/mensch18a.pdf)
+
+Dynamic programming (DP) solves a variety of
+structured combinatorial problems by iteratively
+breaking them down into smaller subproblems.
+In spite of their versatility, many DP algorithms
+are non-differentiable, which hampers their use
+as a layer in neural networks trained by backpropagation. To address this issue, we propose
+to smooth the max operator in the dynamic programming recursion, using a strongly convex
+regularizer. This allows to relax both the optimal value and solution of the original combinatorial problem, and turns a broad class of DP algorithms into differentiable operators.
+
+
+
+### A fresh look at some Machine Learning techniques from the perspective of Dempster-Shafer theory
+http://bmei.cmu.ac.th/file.php?id=455
+
