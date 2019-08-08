@@ -10,6 +10,7 @@ categories: Research
 
 MRT เป็นเทคนิคที่ใช้ REINFORCE Algorithm ในการหา Policy Gradient ซึ่ง หลักการก็คือ เค้าเปลี่ยนวิธีการหา loss ใหม่ แต่เดิมหา loss จาก Groundtruth โดยใช้ Maximum Likelihood ซึ่งมันไม่สอดคล้องกับการใช้ BLEU score
 
+
 แต่ว่าจะเอา BLEU Score มา Optimize ตรงๆ ทำไม่ได้ เพราะว่าไม่สามารถทำ Backpropagation ได้ ดังนั้นจึงต้องใช้ REINFORCE Algorithm หลักการคือการหา Expected Risk loss ซึ่ง Risk loss คืออะไรก็ได้ ยกตัวอย่างเช่น (1-BLEU) ยิ่ง BLEU เยอะ Risk ก็จะน้อย
 
 ก็หา Expectation ก็จะเริ่มจาก Sampling Y' ออกมาจาก X จำนวนหนึ่ง แล้วหา Risk Loss เอา Risk Loss (sentence-level) ไปคูณกับ cost(Y'|X) แล้วค่อยรวมทั้งหมดอีกที 
