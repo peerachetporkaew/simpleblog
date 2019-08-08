@@ -3,7 +3,7 @@ title: "Minimum Risk Training for NMT"
 comments : true
 layout: post
 published: true
-categories: Research
+categories: Paper
 ---
 
 ### Introduction
