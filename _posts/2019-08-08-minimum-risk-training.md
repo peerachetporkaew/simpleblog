@@ -10,6 +10,8 @@ categories: Paper
 
 MRT เป็นเทคนิคที่ใช้ REINFORCE Algorithm ในการหา Policy Gradient ซึ่ง หลักการก็คือ เค้าเปลี่ยนวิธีการหา loss ใหม่ แต่เดิมหา loss จาก Groundtruth โดยใช้ Maximum Likelihood ซึ่งมันไม่สอดคล้องกับการใช้ BLEU score
 
+REINFORCE Algorithm (http://www.scholarpedia.org/article/Policy_gradient_methods)
+
 
 แต่ว่าจะเอา BLEU Score มา Optimize ตรงๆ ทำไม่ได้ เพราะว่าไม่สามารถทำ Backpropagation ได้ ดังนั้นจึงต้องใช้ REINFORCE Algorithm หลักการคือการหา Expected Risk loss ซึ่ง Risk loss คืออะไรก็ได้ ยกตัวอย่างเช่น (1-BLEU) ยิ่ง BLEU เยอะ Risk ก็จะน้อย
 
@@ -55,47 +57,15 @@ def mrt_cost(cost, y_mask, options):
     # ณ ตอนนี้ ค่า cost จะมากกว่า 0 เพราะเป็น Neg Log Prob และคูณด้วย alpha ซึ่ง > 0
 
     #get normalized probability
-    cost = tensor.nnet.softmax(-cost)[0] #eq. 13 ที่ใช้ -cost เพราะว่ามันจะใช้ MRT_Loss เป็นตัวดันแทน Loss ดังนั้น ถ้า Cost ต่ำ แต่ Risk สูง เราจะต้องถือว่ามันมี MRT_Loss สูง
+    cost = tensor.nnet.softmax(-cost)[0] #eq. 13 ที่ใช้ -cost เพราะเราต้อง Normalize ตัว Prob จึงต้องแปลงจาก -log P ให้กลายเป็น log P ก่อน แล้วค่อย ทำ exp (log P) / sum( exp (log P )) ดังนั้นค่า Cost ที่เก็บคือ Normalized Prob จาก ทุกๆ sample ที่สุ่มออกมา 
+    
 
-    #เช่น
-
-    """
-        A มี Risk เท่ากับ B = 1
-        B cost = 2  ผ่าน softmax([-1 (A),-2 (B)]) = 0.26
-        A cost = 1  ผ่าน softmax([-1 (A),-2 (B)]) = 0.73  
-        หมายความว่ามันง่ายที่จะ Generate A ซึ่งมี Risk สูงพอๆ กับ B แต่ A มีโอกาสเกิดสูงกว่า ดังนั้น ควรให้ Loss กับ A มากกว่านั่นเอง
-
-        จะเห็นว่า Risk กับ cost นั้นสัมพันธ์กัน ที่นี้ค่า Risk จะคำนวณอย่างไร ?
-
-        เนื่องจากเราใช้ BLEU score ถ้า Risk สูง หมายถึง BLEU ต่ำๆ ดังนั้น ค่า Risk
-
-        อาจจะเท่ากับ -BLEU ซึ่งพอไปคูณกับ cost ที่ผ่าน softmax แล้วจะทำให้ค่าติดลบไปอีก ดังนั้น เราจึงอาจจะให้ Risk = 1 - BLEU ซึ่งก็ Make sense ดี
-
-        แต่วิธีการนี้เนื่องจากแต่ละประโยคให้ BLEU ที่มีความแตกต่างกันมากๆ เราจึงเรียกปัญหานี้ว่า High Variance วิธีการที่นิยมใช้คือ หา baseline โดย Sampling ออกมามากๆ แล้วค่อยหา BLEU เฉลี่ยนจาก Sampling นี้ จากนั้นค่อยหา Risk
-
-        เพราะถ้าใช้ 1 - BLEU เลยจะไม่ยุติธรรมกับประโยคยากๆ ดังนั้นควรเอา 
-        (BLEU ปัจจุบันหรือ baseline) - (BLEU ที่ Sampling ออกมา) ก็จะทำให้ได้ Risk ที่นิ่งขึ้น
-
-        RISK = Baseline - BLEU sampling ซึ่ง Baseline ไม่ควรมีค่าน้อยเกินไป เพราะจะเท่ากับว่าไม่ได้อัพเดตเลย ดังนั้น ตัว RISK แบบนี้สามารถเป็น บวก หรือ ลบ ก็ได้
-
-        ทีนี้ก็มีคำถามอีกว่า Scale ของ BLEU ควรอยู่ใน 0 - 1 หรือ 0 - 100 
-        ตอบ Nematus ใช้ 0 - 1
-
-        Learning Rate ก็จะมีผลเข้ามาด้วย ซึ่ง ปกติเราใช้ 0.0007 สำหรับการเทรนแบบ MLE
-        แต่พอแบบนี้เนื่องจากค่า Reward มันเล็กมาก เราจึงเปลี่ยนไปใช้การ Optimize ด้วย SGD และให้
-        Learning Rate = 10
-
-        ค่าที่ควรสังเกตอีกค่าก็คือ Gradient Norm คือ ขนาดของ Gradient โดยเฉลี่ย ซึ่ง MRT เป็นวิธีการทำ
-        Fine-Tuning ทำให้ค่า Gradient ค่อยๆ ปรับขึ้นลงทีละน้อยๆ
-    """ 
-
-    #me
 
     # risk: expected loss
     if options['mrt_ml_mix'] > 0 and not options['mrt_reference']:
         cost *= loss[1:]
     else:
-        cost *= loss
+        cost *= loss # คูณกับ Loss จาก MRT (คือ Baselin - BLEU)
 
 
     cost = cost.sum() #eq. 11-12
@@ -109,7 +79,7 @@ def mrt_cost(cost, y_mask, options):
     return cost, loss
 ```
 
-มาถึงตรงนี้เราจะพบว่าข้อมูลที่ต้องโหลดเข้า GPU จะเยอะมาก เพราะมันเท่ากับ Batch x Sampling size ดังนั้น จึงควรลดขนาด Batch ลงเพื่อให้ไม่เกิด Out-Of-Memory 
+มาถึงตรงนี้เราจะพบว่าข้อมูลที่ต้องโหลดเข้า GPU จะเยอะมาก เพราะมันเท่ากับ Batch x Sampling size ดังนั้น จึงควรลดขนาด Batch ลงเพื่อให้ไม่เกิด Out-Of-Memory  ปกติ Batch Size สำหรับ MRT จะเท่ากับ 1
 
 มาดูส่วนของการ Sampling ของ Nematus กันบ้าง 
 
@@ -215,8 +185,6 @@ loss = - (loss - mean_loss)
 เพราะ loss - mean_loss ==> reward แต่เราต้องการ loss ดังนั้น จึงต้องใส่ - เข้าไปข้างหน้าอีกทีหนึ่ง
 
 
-ยังรันไม่ได้เลยต้องมาดูว่าหา loss ผิดตรงไหน
-
 ```python
 # build a training model
 def build_model(tparams, options):
@@ -271,6 +239,249 @@ def build_model(tparams, options):
     #print opt_ret
     return trng, use_noise, x, x_mask, y, y_mask, opt_ret, cost
 ```
+
+มาดูโค้ดสำหรับ REINFORCE Algorithm แบบพื้นฐานที่สุดสำหรับการทำ Sequence Generation กันครับ
+
+```python
+"""
+RNN Policy Gradient
+"""
+
+import torch
+import torch.nn as nn
+
+tgt_dict = {"A" : 0, "B" : 1, "C" : 2, "D" : 3}
+
+def n_grams(list_words):
+    set_1gram, set_2gram, set_3gram, set_4gram = set(), set(), set(), set()
+    count = {}
+    l = len(list_words)
+    for i in range(l):
+        word = list_words[i]
+        if word not in set_1gram:
+            set_1gram.add(word)
+            count[word] = 1
+        else:
+            set_1gram.add((word,count[word]))
+            count[word] += 1
+    count = {}
+
+    for i in range(l-1):
+        word = (list_words[i],list_words[i+1])
+        if word not in set_2gram:
+            set_2gram.add(word)
+            count[word] = 1
+        else:
+            set_2gram.add((word,count[word]))
+            count[word] += 1
+
+    count = {}
+
+    for i in range(l-2):
+        word = (list_words[i],list_words[i+1], list_words[i+2])
+        if word not in set_3gram:
+            set_3gram.add(word)
+            count[word] = 1
+        else:
+            set_3gram.add((word,count[word]))
+            count[word] += 1
+    count = {}
+
+    for i in range(l-3):
+        word = (list_words[i],list_words[i+1], list_words[i+2], list_words[i+3])
+        if word not in set_4gram:
+            set_4gram.add(word)
+            count[word] = 1
+        else:
+            set_4gram.add((word,count[word]))
+            count[word] += 1
+
+    return set_1gram, set_2gram, set_3gram, set_4gram
+
+def my_sentence_gleu(references, hypothesis):
+    reference = references[0]
+    ref_grams = n_grams(reference)
+    hyp_grams = n_grams(hypothesis)
+    match_grams = [x.intersection(y) for (x,y) in zip(ref_grams, hyp_grams)]
+    ref_count = sum([len(x) for x in ref_grams])
+    hyp_count = sum([len(x) for x in hyp_grams])
+    match_count = sum([len(x) for x in match_grams])
+    gleu = float(match_count) / float(max(ref_count,hyp_count))
+    return float(gleu*100)
+
+def letter2index(letter):
+    global tgt_dict
+    return tgt_dict[letter]
+
+def index2letter(index):
+    global tgt_dict
+    for k in tgt_dict:
+        if tgt_dict[k] == index:
+            return k
+
+def index2onehot(index,size):
+    onehot = torch.zeros((size,))
+    onehot[index] = 1
+    return onehot
+
+class RNN(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(RNN, self).__init__()
+
+        self.hidden_size = hidden_size
+
+        self.i2h = nn.Linear(input_size + hidden_size, hidden_size)
+        self.i2o = nn.Linear(input_size + hidden_size, output_size)
+        self.softmax = nn.Softmax(dim=0)
+
+    def forward(self, input, hidden):
+        combined = torch.cat((input, hidden), 0)
+        hidden = self.i2h(combined)
+        output = self.i2o(combined)
+        output = self.softmax(output)
+        return output, hidden
+
+    def initHidden(self):
+        return torch.zeros(self.hidden_size)
+
+n_letters = 4
+n_categories = 4
+n_hidden = 20
+learning_rate = 0.01
+rnn = RNN(n_letters, n_hidden, n_categories)
+optimizer = torch.optim.SGD(rnn.parameters(), lr=learning_rate, momentum=0.9)
+
+def train_nll_step():
+    global rnn, n_letters
+    learning_rate = 0.01
+    optimizer = torch.optim.SGD(rnn.parameters(), lr=learning_rate, momentum=0.9)
+    hidden = rnn.initHidden()
+    rnn.zero_grad()
+
+    inputx = "A B C D".split(" ")
+    input_index = [letter2index(x) for x in inputx]
+    input_emb = [index2onehot(x,n_letters) for x in input_index]
+    out_list = []
+
+    outputy = torch.Tensor([[0],[1],[2],[3]]).long()
+
+    for inp in input_emb:
+        output, hidden = rnn(inp, hidden)
+        out_list.append(output)
+    
+    out = torch.stack(out_list,dim=0)
+    out = -torch.log(out)
+
+    loss = torch.gather(out,1,outputy)
+    loss = loss.sum()
+    loss.backward()
+
+    optimizer.step()
+
+    return out, loss.item()
+
+def sampling_out(prob):
+    #print(prob)
+    return torch.multinomial(prob,1)
+
+def train_mrt_step():
+    global rnn, n_letters
+    hidden = rnn.initHidden()
+    rnn.zero_grad()
+    rnn.eval()
+    inputx = "A B C D".split(" ")
+    input_index = [letter2index(x) for x in inputx]
+    input_emb = [index2onehot(x,n_letters) for x in input_index]
+    
+
+    outputy = torch.Tensor([[0],[1],[2],[3]]).long()
+    
+    out_list = []
+    for inp in input_emb:
+        output, hidden = rnn(inp, hidden)
+        out_list.append(output)
+
+    out = torch.stack(out_list,dim=0)
+
+    #Sampling Baseline
+    samples = []
+    for k in range(0,4):
+        sampling_x = sampling_out(out)
+        samples.append(sampling_x.view(-1))
+    
+    samples = torch.stack(samples)
+    #print(samples)
+
+    samples = samples.data.tolist()
+    bleu = []
+    for sample in samples:
+        score = my_sentence_gleu([[0,1,2,3]], sample)
+        bleu.append(score)
+    print("SAMPLE : ", sample)
+
+    baseline = sum(bleu)/len(bleu)
+    print(baseline)
+
+    #Sampling in for optimization
+    rnn.train()
+    rnn.zero_grad()
+    hidden = rnn.initHidden()
+    out_list = []
+    for inp in input_emb:
+        output, hidden = rnn(inp, hidden)
+        out_list.append(output)
+
+    out = torch.stack(out_list,dim=0)
+
+
+    samples = []
+    for k in range(0,20):
+        sampling_x = sampling_out(out)
+        samples.append(sampling_x.view(-1))
+    
+    samples = torch.stack(samples)
+    #print(samples)
+
+    samples_L = samples.data.tolist()
+    bleu = []
+    for sample in samples_L:
+        score = my_sentence_gleu([[0,1,2,3]], sample)
+        bleu.append(score)
+    
+    bleu_diff = torch.Tensor(bleu) # Reward ที่ได้รับแปลผันตรงกับค่า BLEU Score
+
+    print(bleu_diff)
+
+    out = torch.stack(out_list,dim=0)
+    out = -torch.log(out)
+
+    sent_loss = []
+    for sample in samples:
+        loss = torch.gather(out,1,sample.view(-1,1))
+        sent_loss.append(loss)
+    
+    sent_loss = torch.stack(sent_loss,dim=0)
+    sent_loss = sent_loss.view(sent_loss.size(0),-1)
+    
+    alpha = 0.1
+    sent_loss = sent_loss.sum(-1) * alpha # alpha คือ Temperature ทำบน Scale log เลยเป็นการคูณ แทนการยกกำลัง
+    sent_loss = torch.softmax(-sent_loss, dim=0) #เพราะ sent_loss เป็น negative log มา เพราะจริงๆ คือ ใช้ normalized prob ไปคูณ Reward
+    mrt_loss = sent_loss * bleu_diff #คูณกับ Reward เพื่อหา Expected Reward
+    mrt_loss = mrt_loss.sum() # ได้ Expected Reward
+    mrt_loss = -mrt_loss #ที่ต้องติดลบเพราะต้องการ Maximize แต่ optimizer.step() มันจะเป็นการ Minimize
+
+    print(mrt_loss)
+    mrt_loss.backward()
+    optimizer.step()
+    return out, mrt_loss.item()
+
+if __name__ == "__main__":
+    for i in range(0,500):
+        print("ITER : ",i)
+        out,loss = train_mrt_step()
+        print(loss)
+```
+
 
 ### Beyond
 
