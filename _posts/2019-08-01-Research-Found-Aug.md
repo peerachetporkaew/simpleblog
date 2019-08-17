@@ -181,3 +181,20 @@ https://www.aclweb.org/anthology/N18-1121
 ### Interpretable 
 
 https://towardsdatascience.com/python-libraries-for-interpretable-machine-learning-c476a08ed2c7
+
+
+This repository contains the code developed in TensorFlow for the following paper:
+
+
+
+### Deep Reinforcement Learning For Sequence to Sequence Models,
+
+by: Yaser Keneshloo, Tian Shi, Naren Ramakrishnan, and Chandan K. Reddy
+If you used this code, please kindly consider citing the following paper:
+
+https://github.com/yaserkl/RLSeq2Seq
+
+
+### TOWARDS BETTER UNDERSTANDING OFGRADIENT-BASED ATTRIBUTION METHODS FOR DEEP NEURAL NETWORKS
+
+https://openreview.net/pdf?id=Sy21R9JAW
