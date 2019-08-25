@@ -25,7 +25,7 @@ Natural language is hierarchically structured: smaller units (e.g., phrases) are
 
 ดังนั้นเวลาที่เราจะดู LSTM เราต้องดู input (x) , hidden (h) และ memory cell (C) สมการการอัพเดต h และ C เป็นดังนี้ครับ
 
-![torch.cumsum](./imgs/lstm.jfif))
+![LSTM](./assets/lstm.jfif)
 
 ซึ่งตัว ON-LSTM นั้นจุดหลักๆ เลย คือ การสร้าง Gate ที่มี Order ขึ้นมาอีกชั้นหนึ่งเพื่อ อัพเดตตัว C ครับ ทีนี้เขาทำยังไงให้ Gate ตัวใหม่นี้มันอัพเดตแบบมีลำดับชั้นได้นะ !
 
