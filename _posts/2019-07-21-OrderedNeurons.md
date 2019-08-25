@@ -6,14 +6,36 @@ published: true
 categories: Paper
 ---
 
-### Ordered Neurons : Code Hacking
+### อธิบายเรื่อง Ordered Neurons : Integrating Tree Structures into Recurrent Neural Networks
 
 Natural language is hierarchically structured: smaller units (e.g., phrases) are nested within larger units (e.g., clauses). When a larger constituent ends, all of the smaller constituents that are nested within it must also be closed. While the standard LSTM architecture allows different neurons to track information at different time scales, it does not have an explicit bias towards modeling a hierarchy of constituents. This paper proposes to add such an inductive bias by ordering the neurons; a vector of master input and forget gates ensures that when a given neuron is updated, all the neurons that follow it in the ordering are also updated. Our novel recurrent architecture, ordered neurons LSTM (ON-LSTM), achieves good performance on four different tasks: language modeling, unsupervised parsing, targeted syntactic evaluation, and logical inference.
 
+ภาษาธรรมชาตินั้นถือว่าเป็นข้อมูลที่มีลำดับชั้น: หน่วยที่เล็กกว่า (เช่น นามวลี กริยาวลี) ประกอบกันขึ้นเป็นหน่วยที่ใหญ่ (เช่น อนุประโยค) เมื่อสิ้นสุดอนุประโยค แน่นอนว่าส่วนประกอบภายในที่เล็กกว่าก็จะต้องจบในอนุประโยคนั้น ถึงแม้ว่า LSTM แบบมาตรฐานสามารถที่จะติดตามข้อมูล ณ เวลาต่างๆ กันได้ แต่มันไม่มีการจดจำที่ชัดเจนเพื่อที่จะสร้างลำดับชั้นของส่วนประกอบภายใน (constituent) ได้ งานวิจัยนี้ได้เพิ่มส่วนขยายที่ทำให้เซลประสาทนั้นมีการทำงานที่เป็นลำดับขั้นไว้ภายใน กล่าวคือ เมื่อเซลประสาทหนึ่งใน input gate และ forget gate ถูกแก้ไข ก็จะทำให้เซลประสาทอื่นๆ ที่อยู่ภายใต้ (มีลำดับที่ต่ำกว่า) เซลประสาทนั้นได้รับการอัพเดตไปด้วย เราตั้งชื่อสถาปัตยกรรมของโครงข่ายประสาทเทียมแบบป้อนกลับลักษณะนี้ว่า Ordered Neurons LSTM (ON-LSTM) ซึ่งผลการทดสอบพบว่าให้ค่าความถูกต้องที่น่าพอใจในทั้ง 4 งาน ได้แก่ Language Modeling, Unsupervised Parsing, Targeted Syntactic Evaluation และ Logical Inference
+
+
+ขออนุญาตข้ามมาส่วน Methodology กันเลย ซึ่งต่อจากนี้จะอธิบายตามแบบฉบับของผมเองนะครับ 
+
+### ทบทวน LSTM แบบปกติกันก่อน
+
+ปกติเมื่อพูดถึง Neural Network เราจะสนใจ Input vector และ Output vector ซึ่งนั่นก็เป็นหลักการโดยปกติ แต่พอกล่าวถึง Recurrent Neural Network แล้วนั่นคือ Output vector จะมาเป็น Input อีกอันหนึ่ง (จึงถูกเรียกว่า hidden state) คู่กับ Input ของข้อมูลด้วย ดังนั้น จึงเรียกว่า Recurrent ซึ่งหากมี Recurrent Cell หนึ่งชั้นก็คือ มีพารามิเตอร์ของ Recurrent เพียง 1 ชุดเท่านั้น และใช้ พารามิเตอร์นี้กับทุกๆ time step นี่ก็คือหลักการของ Shared weight ครับ
+
+ทีนี้พอมาเป็น LSTM มันไม่ได้มีแค่ input , hidden แล้ว แต่ยังมี memory cell เพิ่มเข้ามาด้วย ซึ่งแต่ละ time step ในการประมวลผล มันจะอัพเดตตัว Memory cell ด้วยการลบ และใส่ ข้อมูลเข้าไปใหม่ ดังนั้น LSTM จึงถูกเรียกว่า Long Short-Term Memory ( ซึ่งผมคิดว่ามันน่าจะแปลว่า Memory แบบ Short-Term ที่ Long, ไม่ใช่ Long-Term and Short-Term Memory ! แต่ไม่แน่ใจว่าผู้พัฒนามีเจตนาเลือกใช้อันไหนนะครับ เป็น คหสต.)
+
+> สามารถอ่านรายละเอียดแบบเต็มๆ ได้ที่ [http://colah.github.io/posts/2015-08-Understanding-LSTMs/](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)
+
+ดังนั้นเวลาที่เราจะดู LSTM เราต้องดู input (x) , hidden (h) และ memory cell (C) สมการการอัพเดต h และ C เป็นดังนี้ครับ
+
+![torch.cumsum](./imgs/lstm.jfif))
+
+ซึ่งตัว ON-LSTM นั้นจุดหลักๆ เลย คือ การสร้าง Gate ที่มี Order ขึ้นมาอีกชั้นหนึ่งเพื่อ อัพเดตตัว C ครับ ทีนี้เขาทำยังไงให้ Gate ตัวใหม่นี้มันอัพเดตแบบมีลำดับชั้นได้นะ !
+
+
+
+ 
 [CODE](https://github.com/yikangshen/Ordered-Neurons)
 
 
-![torch.cumsum](./assets/torch.cumsum.PNG)
+[//]: #(![torch.cumsum](./assets/torch.cumsum.PNG))
 
 วันนี้เราจะมาดูว่าส่วนประกอบภายในของ Ordered Neurons ทำงานอย่างไรกันนะครับ
 
@@ -133,6 +155,40 @@ def forward(self, input, hidden,
 ```
 
 หากเรา print ค่าออกมาจะพบว่าค่าของ Gate นั้นไม่ใช่ 0, 1 อย่างที่ใน paper อธิบาย แต่ผู้เขียนใช้ 0,1 อธิบายเพื่อให้เห็นภาพและเข้าใจง่ายเท่านั้นเอง จริงๆ แล้วเป็นจำนวนจริงทั้งหมด และสุดท้ายเอาค่า d ซึ่งเป็น expectation ของ g_k มาทำต่อเท่านั้นเอง
+
+
+ระหว่างนี้ผมได้ไปลองรันระบบจนได้โมเดลที่ดีระดับนึงออกมา 
+
+ทีนี้มาส่วนของการ Parse กันบ้าง สมมติว่า Train จนได้โมเดลเสร็จเรียบร้อยแล้ว ซึ่ง Structure ของ ON-LSTM ที่ใช้ทำ Language Modeling นั้นเป็นแบบ 3 Layer ดังนั้น การหา distance สำหรับการ Parse จึงสามารเลือกได้ว่าจะมาจากชั้นใด
+
+กรณีนี้ใช้ชั้นที่ 2 ดังนั้นจะได้ดังนี้ 
+
+```python
+def test_one(model,corpus,sen,cuda,prt):
+    model.eval()
+    sen = sen.split(" ")
+    word2idx = corpus.dictionary.word2idx
+    x = numpy.array([word2idx[w] if w in word2idx else word2idx['<unk>'] for w in sen])
+    input = Variable(torch.LongTensor(x[:, None]))
+    
+    if cuda:
+        input = input.cuda()
+
+    hidden = model.init_hidden(1)
+    _, hidden = model(input, hidden)
+
+    distance = model.distance[0].squeeze().data.cpu().numpy()
+    distance_in = model.distance[1].squeeze().data.cpu().numpy()
+
+    gates = distance[1]
+    depth = gates[1:-1]
+    parse_tree = build_tree(depth, sen_cut)
+
+    return MRG(parse_tree).strip()
+```
+
+จะเห็นว่าตัวแปร gates นั้นเลือกใช้จาก distance[1] เพื่อนำมาสร้าง depth และ parse ออกมาเป็น Tree อีกที
+
 
 ### English
 
