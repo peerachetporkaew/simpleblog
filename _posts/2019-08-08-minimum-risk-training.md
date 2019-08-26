@@ -482,6 +482,8 @@ if __name__ == "__main__":
         print(loss)
 ```
 
+มาคิดๆ ว่าทำไม REINFORCE Algorithm ถึงไม่ work กับ Neural Machine Translation ส่วนหนึ่งอาจจะเป็นเพราะการ Optimize ของ REINFORCE Algorithm มันเป็นการ Optimize ทีละ 1 ประโยค นั่นหมายความว่าหากมีแค่ประโยคเดียวมันจะ Converge แน่นอน แต่พอมีหลายประโยคแล้ว ทำให้ Gradient มันอาจเกิดการขัดแย้งกันเองทำให้เกิดการ Swing กลายเป็น local optimum แบบไม่ได้ตั้งใจก็เป็นได้ เพราะเราไม่รู้เลยว่าแต่ละประโยคมันจะโหวตให้ Gradient ไปทางทิศเดียวกันหรือไม่
+
 
 ### Beyond
 
