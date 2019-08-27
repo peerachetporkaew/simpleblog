@@ -198,3 +198,24 @@ https://github.com/yaserkl/RLSeq2Seq
 ### TOWARDS BETTER UNDERSTANDING OFGRADIENT-BASED ATTRIBUTION METHODS FOR DEEP NEURAL NETWORKS
 
 https://openreview.net/pdf?id=Sy21R9JAW
+
+### Distilling the Knowledge in a Neural Network
+
+https://arxiv.org/pdf/1503.02531.pdf
+
+good = reasonable
+we choosed a ... approach = we opted for a ... approach
+
+we typically use very similar models
+for the training stage and the deployment stage despite their very different requirements
+
+我们通常使用非常相似的模型对于培训阶段和部署阶段，尽管它们的要求非常不同
+
+IDEA about this -- Many insects have a larval form that is optimized for extracting energy and nutrients from the environment and a completely different adult form that is optimized for the very different requirements
+of traveling and reproduction.
+
+เค้านิยามว่าตอนเรียน กับตอนแปลนั้นเป็นคนละเรื่องกัน ไม่ควรใช้ Model แบบเดียวกัน ดังนั้นเวลาแปลควรแบ่งเป็น source-native หรือ target-native ซึ่งเครื่องแปลโดยส่วนใหญ๋จะเป็น target-native ซึ่งทำให้ภาษาปลายทางนั้นลื่นไหลมาก แต่เราก็ยังต้องการ source-native เพื่อมาตรวจสอบ lexical and conceptual equivalent ของคำแปลด้วย
+
+### Speed up your deep learning language model up to 1000% with the adaptive softmax
+
+https://mc.ai/speed-up-your-deep-learning-language-model-up-to-1000-with-the-adaptive-softmax-part-2-pytorch/
