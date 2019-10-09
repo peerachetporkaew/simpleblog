@@ -219,3 +219,21 @@ of traveling and reproduction.
 ### Speed up your deep learning language model up to 1000% with the adaptive softmax
 
 https://mc.ai/speed-up-your-deep-learning-language-model-up-to-1000-with-the-adaptive-softmax-part-2-pytorch/
+
+
+
+### Non-autoregressive Transformers
+
+https://github.com/pytorch/fairseq/blob/master/examples/nonautoregressive_translation/README.md
+
+Non-Autoregressive Neural Machine Translation (Gu et al., 2017)
+
+Deterministic Non-Autoregressive Neural Sequence Modeling by Iterative Refinement (Lee et al. 2018)
+
+Mask-Predict: Parallel Decoding of Conditional Masked Language Models (Ghazvininejad et al., 2019)
+
+
+### Insertion Transformer: Flexible Sequence Generation via Insertion Operations (Stern et al. 2019)
+
+### Levenshtein Transformer (Gu et al., 2019).
+
